@@ -124,7 +124,8 @@ def metadatas():
     if username == 'anonymous':
         return abort(403)
     def_es_querysize = 60
-    gnurl = app.extensions["conf"].get(app.extensions["conf"].get('localgn', 'urls'), 'secproxytargets')
+    url1 = app.extensions["conf"].get('localgn', 'urls')
+    gnurl = app.extensions["conf"].get(url1, 'secproxytargets')
     preauth = requests.get(gnurl + "srv/api/me", headers={'Accept': 'application/json'})
     if preauth.status_code == 204:
       if 'XSRF-TOKEN' in preauth.cookies:

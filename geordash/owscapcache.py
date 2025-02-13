@@ -71,12 +71,10 @@ class OwsCapCache:
         self.cache_lifetime = 12 * 60 * 60
         try:
             from config import url
+            self.rediscli = Redis.from_url(url)
+            self.conf = conf
         except:
-            # running owscapcache from a python cli for tests
-            from os import getenv
-            url=getenv('REDISURL')
-        self.rediscli = Redis.from_url(url)
-        self.conf = conf
+            get_logger("OwsCapCache").error(f"wrong can't set redis url {url}")
 
     def fetch(self, service_type, url, force_fetch=False):
         if service_type not in ("wms", "wmts", "wfs", "csw"):

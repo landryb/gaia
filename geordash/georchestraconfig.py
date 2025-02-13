@@ -6,6 +6,7 @@ from configparser import ConfigParser
 from itertools import chain
 from os import getenv
 import json
+import re
 
 class GeorchestraConfig:
     def __init__(self):
@@ -35,16 +36,28 @@ class GeorchestraConfig:
                 self.sections['urls']['localgn'] = localentry['url'].split('/')[1]
             except:
                 # safe default value
-                self.sections['urls']['localgn'] = 'geonetwork'
+                self.sections['urls'][''] = 'geonetwork'
             try:
                 localentry = localconfig["initialState"]["defaultState"]["catalog"]["default"]["services"]["localgs"]
                 self.sections['urls']['localgs'] = localentry['url'].split('/')[1]
             except:
                 # safe default value
                 self.sections['urls']['localgs'] = 'geoserver'
+        print(self.sections)
 
-    def get(self, key, section='default'):
-        if section in self.sections:
-            return self.sections[section].get(key, None)
-        else:
-            return None
+    def get(self, key, section='default', lo=None):
+        value = self.sections[section].get(key, None)
+        if lo is not None :
+            lo.info(" Before transformation url is : " + value)
+        if value:
+            search_env = re.match('^\${(.*)}$', value)
+            search_env2 = re.match('(.*)\${(.*)}(.*)', value)
+            if search_env:
+                if getenv(search_env.group(1)):
+                    value = getenv(search_env.group(1))
+            elif search_env2:
+                if getenv(search_env2.group(2)):
+                   value = search_env2.group(1) + getenv(search_env2.group(2)) +search_env2.group(3)
+        if lo is not None:
+            lo.info("  After transformation url is : " + value)
+        return value

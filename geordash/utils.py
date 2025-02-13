@@ -6,7 +6,7 @@ from flask import current_app as app
 
 def find_localmduuid(service, layername):
     localmduuids = set()
-    localdomain = "https://" + app.extensions["conf"].get("domainName")
+    localdomain = "https://" + app.extensions["conf"].get("domainName", lo=app.logger)
     l = service.contents[layername]
     # wmts doesnt have metadataUrls
     if not hasattr(l, 'metadataUrls'):
@@ -37,7 +37,7 @@ def unmunge(url):
     url = url.replace('~','/')
     if not url.startswith('/') and not url.startswith('http'):
         url = '/' + url
-    localdomain = "https://" + app.extensions["conf"].get("domainName")
+    localdomain = "https://" + app.extensions["conf"].get("domainName", lo=app.logger)
     if url.startswith(localdomain):
         url = url.removeprefix(localdomain)
     return url

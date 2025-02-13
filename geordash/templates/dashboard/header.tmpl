@@ -36,8 +36,9 @@
       height='{{ headerHeight | default(80, true) }}'
       logo-url='{{ logoUrl | default('', true) }}'
       legacy-header='{{ useLegacyHeader |default('true', true) }}'
-      legacy-url='{{ headerUrl | default('/header/', true) }}'>
+      legacy-url='{{ headerUrl | default('/header/', true) }}' padding-bottom='30px' >
   </geor-header>
 </div>
 {% endif %}
 {% endblock content %}
+<a href="javascript:history.back()">Go Back</a>
